@@ -56,6 +56,7 @@ struct uperf_strand {
 	int 		no_connections1;
 	protocol_t 	**connections1;
 	protocol_t	*listen_conn[NUM_PROTOCOLS];
+	int   *listen_conn_ref_count[NUM_PROTOCOLS];
 	protocol_t	*ccache[STRAND_CONNECTION_CACHE_SIZE];
 	int		ccache_size;
 	protocol_t	*cpool;

@@ -42,6 +42,7 @@
 
 int group_execute(strand_t *, group_t *);
 extern options_t options;
+pthread_mutex_t listen_conn_lock;
 
 /*
  * This function is called by the main thread to initialize an
@@ -220,12 +221,21 @@ strand_fini(strand_t *s)
 
 	/* Make sure strand is dead */
 	for (i = 0; i < NUM_PROTOCOLS; i++) {
-		if (s->listen_conn[i] != 0) {
-			protocol_t *p = s->listen_conn[i];
-			/* FIXME: need to do reference counting */
-			destroy_protocol(p->type, p);
-			s->listen_conn[i] = 0;
-
+		protocol_t *p = s->listen_conn[i];
+		int *ref_count = s->listen_conn_ref_count[i];
+		if (ref_count== NULL) {  // owned by current strand thread
+			if (p != NULL) {
+				destroy_protocol(p->type, p);
+			}
+		} else {
+			pthread_mutex_lock(&listen_conn_lock);
+			if (*ref_count == 1) { // owned by current strand thread
+				free(ref_count);
+				destroy_protocol(p->type, p);
+			} else {
+				--*ref_count;
+			}
+			pthread_mutex_unlock(&listen_conn_lock);
 		}
 	}
 	/* Close any open connections */
