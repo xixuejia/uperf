@@ -176,7 +176,7 @@ uperf_get_command(protocol_t *p, uperf_command_t *uc, int bitswap)
 		(void) printf("Error during reading command: %s\n", strerror(errno));
 		return (-1);
 	} else if (read_ret == 0) {
-		(void) printf("Error during reading command: connection closed\n");
+		(void) printf("Error during reading command: connection closed: %s\n", strerror(errno));
 		return (-1);
 	}
 	if (strncmp(uc->magic, UPERF_COMMAND_MAGIC, 64) != 0) {
