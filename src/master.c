@@ -585,7 +585,9 @@ master(workorder_t *w)
 	if (error == 0 && shm->global_error != 0)
 		error = shm->global_error;
 
+	uperf_info("[master pool] complete with error: %d\n", error);
 	(void) wait_for_strands(shm, error);
+	uperf_info("[wait_for_strands] complete\n");
 	newstat_end(0, AGG_STAT(shm), 0, 0);
 
 	shm->current_time = GETHRTIME();
