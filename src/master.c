@@ -285,6 +285,7 @@ master_poll(uperf_shm_t *shm)
 		shm_process_callouts(shm);
 
 		if (BARRIER_REACHED(curr_bar)) { /* goto Next Txn */
+			uperf_info("master reached barrier with curr_txn: %d\n", curr_txn);
 			if (ENABLED_STATS(options)) {
 				if (curr_txn != 0) {
 					print_progress(shm, prev_ns);
@@ -309,6 +310,8 @@ master_poll(uperf_shm_t *shm)
 			shm->txn_begin = GETHRTIME();
 			unlock_barrier(curr_bar);
 			curr_txn++;
+		} else {
+			uperf_info("master is still waiting barrier with curr_txn: %d\n", curr_txn);
 		}
 
 		shm->current_time = GETHRTIME();
