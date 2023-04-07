@@ -50,7 +50,7 @@
 
 #define	ASSERT	assert
 
-#define	REPEATED_SIGNAL_RETRIES	5
+#define	REPEATED_SIGNAL_RETRIES	20
 
 typedef enum {
 	MASTER = 0,
